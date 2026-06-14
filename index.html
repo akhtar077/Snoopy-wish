@@ -105,7 +105,7 @@
             overflow: hidden;
         }
 
-        /* --- SNOOPY PANEL --- */
+        /* --- SNOOPY GARDEN PANEL --- */
         .snoopy-stage {
             position: relative;
             width: 100%;
@@ -114,7 +114,20 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-end;
-            padding-bottom: 20px;
+            padding-bottom: 0px;
+            /* Pastel landscape background inspired by classic strip style */
+            background: linear-gradient(to bottom, #caeff3 0%, #eafcf1 65%, #caebd4 100%);
+        }
+
+        .grass-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background-color: #7cb867;
+            border-top: 4px solid #000000;
+            z-index: 1;
         }
 
         .speech-bubble {
@@ -161,34 +174,18 @@
             z-index: 11;
         }
 
-        .table {
-            width: 80%;
-            height: 60px;
-            background: #a37241;
-            border: 4px solid #000;
-            border-radius: 5px;
-            position: relative;
-            z-index: 1;
-        }
-        .table-leg {
-            position: absolute;
-            width: 20px;
-            height: 40px;
-            background: #8b5a2b;
-            border: 4px solid #000;
-            top: 56px;
-        }
-        .table-leg.left { left: 20px; }
-        .table-leg.right { right: 20px; }
-
         .snoopy-img {
-            width: 180px;
+            width: 190px;
             height: auto;
             position: relative;
             z-index: 2;
             cursor: pointer;
-            margin-bottom: -10px;
+            /* Places Snoopy perfectly on top of the grass outline line */
+            margin-bottom: 60px;
             transition: transform 0.2s ease;
+            background: transparent;
+            border: none;
+            outline: none;
         }
 
         /* --- SNOOPY ANIMATIONS --- */
@@ -208,18 +205,20 @@
             60% { transform: translateY(-30px) scale(1.05) rotate(-5deg); }
         }
 
-        .anim-giggle { animation: giggle 0.5s ease-in-out 2; }
-        .anim-nod { animation: compliment-nod 0.6s ease-in-out 1; }
-        .anim-kiss { animation: kiss-bounce 0.8s ease-in-out 1; }
+        .anim-giggle { animation: giggle 0.5s ease-in-out 2; transform-origin: bottom center; }
+        .anim-nod { animation: compliment-nod 0.6s ease-in-out 1; transform-origin: bottom center; }
+        .anim-kiss { animation: kiss-bounce 0.8s ease-in-out 1; transform-origin: bottom center; }
 
         .status-box {
             background: white;
             border: 4px solid #000;
-            border-radius: 8px;
-            width: 90%;
-            margin-bottom: 20px;
-            padding: 10px;
+            border-top: none; /* Merges cleanly into bottom panel frame */
+            border-radius: 0 0 4px 4px;
+            width: 100%;
+            margin-bottom: 0px;
+            padding: 12px;
             text-align: center;
+            z-index: 3;
         }
 
         .click-header {
@@ -624,10 +623,7 @@
                         <img src="snoopy-600nw-2709284725.webp" alt="Snoopy" class="snoopy-img" id="snoopy-char" onclick="handleSnoopyClick()">
                         <div id="heart-particle" class="heart">❤️</div>
                         
-                        <div class="table">
-                            <div class="table-leg left"></div>
-                            <div class="table-leg right"></div>
-                        </div>
+                        <div class="grass-ground"></div>
                     </div>
 
                     <div class="status-box">
@@ -773,7 +769,7 @@
                 snoopyChar.classList.add('anim-kiss');
                 
                 heart.style.left = (snoopyChar.offsetLeft + 80) + 'px';
-                heart.style.top = (snoopyChar.offsetTop + 20) + 'px';
+                heart.style.top = (snoopyChar.offsetTop + 40) + 'px';
                 heart.style.animation = 'float-heart 1s ease-out forwards';
             }
 
@@ -806,7 +802,6 @@
         function spinWheel() {
             if (isSpinning) return;
 
-            // Simple fail-safe reset if everything gets cleared out completely
             if (availableIndices.length === 0) {
                 availableIndices = [0, 1, 2];
                 sectors.forEach(s => {
@@ -821,13 +816,11 @@
 
             let targetSectorIndex;
 
-            // FORCE spin 1 to land precisely on Birthday Cake (Index 0) if it is still available
             if (availableIndices.includes(0)) {
                 targetSectorIndex = 0;
                 const poolIndex = availableIndices.indexOf(0);
                 availableIndices.splice(poolIndex, 1);
             } else {
-                // Subsequent spins pull randomly from whatever remains out of [1, 2]
                 const randomPoolIndex = Math.floor(Math.random() * availableIndices.length);
                 targetSectorIndex = availableIndices[randomPoolIndex];
                 availableIndices.splice(randomPoolIndex, 1);
@@ -845,7 +838,6 @@
                 resultTextDisplay.style.opacity = "1";
                 resultTextDisplay.innerText = targetSector.label;
 
-                // Eliminate this wedge option visually
                 document.getElementById(`slice-group-${targetSectorIndex}`).classList.add('eliminated');
 
                 bubble.innerHTML = `Ooh! Look!<br>${targetSector.label}`;
@@ -857,12 +849,10 @@
                     snoopyChar.className = 'snoopy-img';
                     
                     if (targetSectorIndex === 0) {
-                        // Switch over to cake view ONLY for the birthday cake destination
                         wheelView.classList.add('hidden-view');
                         cakeView.classList.remove('hidden-view');
                         panelTitle.innerText = "Blow the Candles! 🎂";
                     } else {
-                        // Regular flow for other options without switching panels
                         isSpinning = false;
                         spinBtn.disabled = false;
                         updateSpinButtonText();
@@ -907,19 +897,15 @@
             }
         }
 
-        // Returns user back to wheel configuration, locking out the cake slice
         function returnToWheel() {
-            // Reset cake elements cleanly behind the scenes for loop stability
             litCandlesCount = 3;
             document.querySelectorAll('.candle').forEach(c => c.classList.remove('blown-out'));
             document.getElementById('msg-card').classList.remove('reveal');
 
-            // Toggle screens safely
             cakeView.classList.add('hidden-view');
             wheelView.classList.remove('hidden-view');
             panelTitle.innerText = "The Snoopy spinner wheel";
 
-            // Re-prime the wheel engine variables
             isSpinning = false;
             spinBtn.disabled = false;
             updateSpinButtonText();
