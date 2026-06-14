@@ -1,14 +1,10 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snoopy's Interactive World</title>
     <style>
-        :root {
-            --wheel-font: 'Georgia', 'Times New Roman', serif;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -97,7 +93,7 @@
         }
 
         .panel {
-            background: #f8f6e8; /* Slight off-white/cream paper color */
+            background: #f8f6e8; 
             border: 4px solid #000000;
             border-radius: 8px;
             height: 550px;
@@ -191,7 +187,7 @@
             position: relative;
             z-index: 2;
             cursor: pointer;
-            margin-bottom: -10px; /* Sits on table */
+            margin-bottom: -10px;
             transition: transform 0.2s ease;
         }
 
@@ -227,7 +223,6 @@
             text-align: center;
         }
 
-        /* Click Tracker Box */
         .click-header {
             font-size: 14px;
             font-weight: bold;
@@ -287,6 +282,7 @@
             flex-grow: 1;
             position: relative;
             width: 100%;
+            margin-top: 20px;
         }
 
         .wheel-container {
@@ -303,14 +299,23 @@
         .wheel-svg {
             width: 100%;
             height: 100%;
-            transform: rotate(-30deg); /* Adjust starting point */
+        }
+
+        /* Improved clean typography structure for wheel text */
+        .slice-text-group {
+            transition: opacity 0.4s ease, filter 0.4s ease;
+        }
+        
+        .slice-text-group.eliminated {
+            opacity: 0.25;
+            filter: grayscale(1) blur(0.5px);
         }
 
         .slice-text {
-            font-family: var(--wheel-font);
-            font-size: 26px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-weight: bold;
+            font-size: 20px;
             fill: #000000;
-            transition: font-family 0.3s ease;
         }
 
         .pointer-arrow {
@@ -342,39 +347,48 @@
             background: #ffffff;
             color: #000000;
             border: 4px solid #000;
-            padding: 10px 40px;
-            font-size: 26px;
+            padding: 10px 50px;
+            font-size: 24px;
             font-weight: bold;
             border-radius: 30px;
             cursor: pointer;
             font-family: inherit;
-            position: absolute;
-            bottom: 100px;
+            margin-bottom: 15px;
             box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
+            transition: transform 0.1s, background-color 0.2s;
         }
+        .spin-btn:hover { background-color: #f0f0f0; }
         .spin-btn:active { transform: translateY(2px); }
-        .spin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .spin-btn:disabled { opacity: 0.6; cursor: not-allowed; background: #e0e0e0; }
 
-        .font-adjust-panel {
-            font-size: 14px;
-            line-height: 1.4;
-            padding: 15px;
+        /* Dynamic Result Area Display Box */
+        .result-display-panel {
+            padding: 14px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-top: 4px solid #000;
+            border-radius: 0 0 4px 4px;
+            background: #ffffff;
         }
 
-        .btn-adjust {
-            background: #333;
-            color: #fff;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 12px;
-            cursor: pointer;
-            margin: 0 4px;
-            vertical-align: middle;
+        .result-header {
+            font-size: 13px;
+            color: #777;
+            text-transform: uppercase;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
         }
-        .btn-adjust:hover { background: #000; }
+
+        .result-main-text {
+            font-size: 24px;
+            font-weight: 900;
+            color: #000000;
+        }
 
         /* Heart particle for kiss */
         .heart {
@@ -404,28 +418,28 @@
             <div class="address-bar">Snoopy's Interactive World</div>
         </div>
 
-        <!-- Content -->
+        <!-- Content App Layout -->
         <div class="app-content">
             
-            <!-- LEFT PANEL -->
+            <!-- LEFT PANEL: INTERACTIVE SNOOPY -->
             <div class="panel-wrapper">
                 <h2 class="panel-title">Interactive Snoopy Panel</h2>
                 <div class="panel">
                     <div class="snoopy-stage">
                         <div class="speech-bubble" id="snoopy-bubble">Hehehehe!<br>That's ticklish!</div>
                         
-                        <!-- Snoopy Character -->
+                        <!-- Snoopy Graphic Anchor -->
                         <img src="snoopy-600nw-2709284725.webp" alt="Snoopy" class="snoopy-img" id="snoopy-char" onclick="handleSnoopyClick()">
                         <div id="heart-particle" class="heart">❤️</div>
                         
-                        <!-- Table -->
+                        <!-- Table Asset -->
                         <div class="table">
                             <div class="table-leg left"></div>
                             <div class="table-leg right"></div>
                         </div>
                     </div>
 
-                    <!-- Click Sequence UI -->
+                    <!-- Sequence Interactive Tracker Box -->
                     <div class="status-box">
                         <div class="click-header">Click Count</div>
                         <div class="steps-container">
@@ -446,45 +460,53 @@
                 </div>
             </div>
 
-            <!-- RIGHT PANEL -->
+            <!-- RIGHT PANEL: ELIMINATION WHEEL -->
             <div class="panel-wrapper">
                 <h2 class="panel-title">The Snoopy spinner wheel</h2>
                 <div class="panel">
                     
                     <div class="wheel-stage">
+                        <!-- Stationary Indicator Needle -->
                         <div class="pointer-arrow"></div>
                         
+                        <!-- Mathematical Rotating Container -->
                         <div class="wheel-container" id="wheel">
                             <svg class="wheel-svg" viewBox="0 0 200 200">
-                                <!-- Colors based on the provided image -->
-                                <!-- Red -->
+                                <!-- Red Segment -->
                                 <path d="M 100 100 L 100 0 A 100 100 0 0 1 186.6 150 Z" fill="#d9383a"/>
-                                <!-- Blue -->
+                                <!-- Blue Segment -->
                                 <path d="M 100 100 L 186.6 150 A 100 100 0 0 1 13.4 150 Z" fill="#3ab1e0"/>
-                                <!-- Yellow -->
+                                <!-- Yellow Segment -->
                                 <path d="M 100 100 L 13.4 150 A 100 100 0 0 1 100 0 Z" fill="#f2cf40"/>
 
-                                <!-- Text Elements -->
-                                <!-- Birthday Card (Red) -->
-                                <text transform="translate(135, 65) rotate(30)" class="slice-text" text-anchor="middle">Birthday</text>
-                                <text transform="translate(125, 90) rotate(30)" class="slice-text" text-anchor="middle">Card</text>
+                                <!-- Segment 0 text: Birthday Card (Center: 60deg) -->
+                                <g transform="rotate(60, 100, 100)" class="slice-text-group" id="slice-group-0">
+                                    <text x="100" y="38" class="slice-text" text-anchor="middle">Birthday</text>
+                                    <text x="100" y="60" class="slice-text" text-anchor="middle">Card</text>
+                                </g>
 
-                                <!-- Dear Friend (Blue) -->
-                                <text transform="translate(100, 155) rotate(90)" class="slice-text" text-anchor="middle">Dear</text>
-                                <text transform="translate(100, 180) rotate(90)" class="slice-text" text-anchor="middle">Friend</text>
+                                <!-- Segment 1 text: Dear Friend (Center: 180deg) -->
+                                <g transform="rotate(180, 100, 100)" class="slice-text-group" id="slice-group-1">
+                                    <text x="100" y="38" class="slice-text" text-anchor="middle">Dear</text>
+                                    <text x="100" y="60" class="slice-text" text-anchor="middle">Friend</text>
+                                </g>
 
-                                <!-- Make a Wish (Yellow) -->
-                                <text transform="translate(60, 60) rotate(-40)" class="slice-text" text-anchor="middle">Make a</text>
-                                <text transform="translate(50, 85) rotate(-40)" class="slice-text" text-anchor="middle">Wish</text>
+                                <!-- Segment 2 text: Make a Wish (Center: 300deg) -->
+                                <g transform="rotate(300, 100, 100)" class="slice-text-group" id="slice-group-2">
+                                    <text x="100" y="38" class="slice-text" text-anchor="middle">Make a</text>
+                                    <text x="100" y="60" class="slice-text" text-anchor="middle">Wish</text>
+                                </g>
                             </svg>
                         </div>
                     </div>
 
+                    <!-- Interaction trigger CTA -->
                     <button class="spin-btn" id="spin-btn" onclick="spinWheel()">SPIN!</button>
 
-                    <!-- Adjust Fonts Box -->
-                    <div class="status-box font-adjust-panel">
-                        After a spin, you can <button class="btn-adjust" onclick="changeWheelFont()">Adjust Fonts Button ⚙️</button> to make it look just right! Personalize the type and color after each click!
+                    <!-- Refined Landing Output Area Box (replaces old fonts message panel) -->
+                    <div class="status-box result-display-panel">
+                        <div class="result-header">Landed On</div>
+                        <div id="result-text" class="result-main-text">Ready to Spin! ✨</div>
                     </div>
                 </div>
             </div>
@@ -498,26 +520,20 @@
         const bubble = document.getElementById('snoopy-bubble');
         const heart = document.getElementById('heart-particle');
         
-        let clickCount = 0; // Starts at 0, first click makes it 1
+        let clickCount = 0;
 
         function handleSnoopyClick() {
-            // Prevent interrupting an ongoing animation
             if (snoopyChar.className.includes('anim-')) return;
 
             clickCount++;
-            
-            // Loop back to 1 if clicked past 3
             if (clickCount > 3) clickCount = 1;
 
-            // Reset UI steps
+            // Update UI step progression
             document.getElementById('step-1').classList.remove('active');
             document.getElementById('step-2').classList.remove('active');
             document.getElementById('step-3').classList.remove('active');
-
-            // Activate current step UI
             document.getElementById(`step-${clickCount}`).classList.add('active');
 
-            // Trigger specific responses based on click count
             if (clickCount === 1) {
                 bubble.innerHTML = "Hehehehe!<br>That's ticklish!";
                 bubble.classList.add('show');
@@ -533,66 +549,99 @@
                 bubble.classList.add('show');
                 snoopyChar.classList.add('anim-kiss');
                 
-                // Trigger heart particle
                 heart.style.left = (snoopyChar.offsetLeft + 80) + 'px';
                 heart.style.top = (snoopyChar.offsetTop + 20) + 'px';
                 heart.style.animation = 'float-heart 1s ease-out forwards';
             }
 
-            // Cleanup animations after they finish
             setTimeout(() => {
                 snoopyChar.className = 'snoopy-img';
                 bubble.classList.remove('show');
-                if (clickCount === 3) {
-                    heart.style.animation = ''; // Reset heart
-                }
+                if (clickCount === 3) heart.style.animation = '';
             }, 1500);
         }
 
-        // --- WHEEL SPIN LOGIC ---
+        // --- WHEEL ELIMINATION AND SPIN ENGINE ---
         const wheel = document.getElementById('wheel');
         const spinBtn = document.getElementById('spin-btn');
+        const resultTextDisplay = document.getElementById('result-text');
+
+        // Sector Data Mappings
+        const sectors = [
+            { id: 0, label: "Birthday Card 🎂", targetAngle: 30 },  // Center 60deg -> maps to 90deg pointer
+            { id: 1, label: "Dear Friend 🤝", targetAngle: 270 },  // Center 180deg -> maps to 90deg pointer
+            { id: 2, label: "Make a Wish ✨", targetAngle: 150 }   // Center 300deg -> maps to 90deg pointer
+        ];
+
+        // Selection Pool arrays
+        let availableIndices = [0, 1, 2];
         let currentRotation = 0;
         let isSpinning = false;
 
         function spinWheel() {
             if (isSpinning) return;
+
+            // If pool is fully depleted, automatically restart round seamlessly
+            if (availableIndices.length === 0) {
+                availableIndices = [0, 1, 2];
+                sectors.forEach(s => {
+                    document.getElementById(`slice-group-${s.id}`).classList.remove('eliminated');
+                });
+            }
+
             isSpinning = true;
             spinBtn.disabled = true;
+            resultTextDisplay.style.opacity = "0.5";
+            resultTextDisplay.innerText = "Spinning...";
 
-            // 5 full spins minimum + random degrees
-            const spinAmount = Math.floor(Math.random() * 360) + 1800; 
-            currentRotation += spinAmount;
+            // Randomly pull an available item from remaining index pool
+            const randomPoolIndex = Math.floor(Math.random() * availableIndices.length);
+            const targetSectorIndex = availableIndices[randomPoolIndex];
             
+            // Remove selection from the pool immediately so it cannot repeat next time
+            availableIndices.splice(randomPoolIndex, 1);
+
+            const targetSector = sectors[targetSectorIndex];
+            const baseAngle = targetSector.targetAngle;
+
+            // Math execution logic to always land directly onto chosen slice boundary
+            const extraSpins = 1440; // 4 clean full spin rotations 
+            const degreesToNextZero = 360 - (currentRotation % 360);
+            const targetRotation = currentRotation + degreesToNextZero + extraSpins + baseAngle;
+            
+            currentRotation = targetRotation;
             wheel.style.transform = `rotate(${currentRotation}deg)`;
 
-            // Unlock after animation completes (4s)
+            // Execute landing sequences after momentum physics wrapper transitions (4000ms)
             setTimeout(() => {
                 isSpinning = false;
                 spinBtn.disabled = false;
+                
+                // Display text update
+                resultTextDisplay.style.opacity = "1";
+                resultTextDisplay.innerText = targetSector.label;
+
+                // Visually dim the text segment on the wheel interface layout
+                document.getElementById(`slice-group-${targetSectorIndex}`).classList.add('eliminated');
+
+                // If pool becomes empty on this turn, alert user next spin resets game cycle
+                if (availableIndices.length === 0) {
+                    spinBtn.innerText = "RESET & SPIN!";
+                } else {
+                    spinBtn.innerText = "SPIN!";
+                }
+
+                // Alert Snoopy response prompt feedback loop hook
+                bubble.innerHTML = `Ooh! Look!<br>${targetSector.label}`;
+                bubble.classList.add('show');
+                snoopyChar.classList.add('anim-nod');
+                setTimeout(() => {
+                    snoopyChar.className = 'snoopy-img';
+                    bubble.classList.remove('show');
+                }, 1800);
+
             }, 4000);
-        }
-
-        // --- FONT ADJUSTMENT LOGIC ---
-        const fontOptions = [
-            "'Georgia', serif", 
-            "'Courier New', monospace", 
-            "'Arial', sans-serif", 
-            "'Brush Script MT', cursive",
-            "'Impact', sans-serif"
-        ];
-        let currentFontIndex = 0;
-
-        function changeWheelFont() {
-            currentFontIndex++;
-            if (currentFontIndex >= fontOptions.length) {
-                currentFontIndex = 0;
-            }
-            
-            // Updates the CSS variable changing all wheel text instantly
-            document.documentElement.style.setProperty('--wheel-font', fontOptions[currentFontIndex]);
         }
     </script>
 </body>
-</html>        
-       
+</html>
