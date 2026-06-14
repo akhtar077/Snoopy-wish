@@ -96,7 +96,7 @@
             background: #f8f6e8; 
             border: 4px solid #000000;
             border-radius: 8px;
-            height: 550px;
+            height: 580px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -149,6 +149,7 @@
             border-style: solid;
             border-color: #000 transparent;
         }
+
         .speech-bubble::before {
             content: '';
             position: absolute;
@@ -160,7 +161,6 @@
             z-index: 11;
         }
 
-        /* Custom drawn table */
         .table {
             width: 80%;
             height: 60px;
@@ -212,7 +212,6 @@
         .anim-nod { animation: compliment-nod 0.6s ease-in-out 1; }
         .anim-kiss { animation: kiss-bounce 0.8s ease-in-out 1; }
 
-        /* Status UI Boxes */
         .status-box {
             background: white;
             border: 4px solid #000;
@@ -274,7 +273,23 @@
             font-weight: bold;
         }
 
-        /* --- WHEEL PANEL --- */
+        /* --- WHEEL VIEW PANEL --- */
+        .view-section {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .hidden-view {
+            display: none !important;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
         .wheel-stage {
             display: flex;
             justify-content: center;
@@ -299,16 +314,6 @@
         .wheel-svg {
             width: 100%;
             height: 100%;
-        }
-
-        /* Improved clean typography structure for wheel text */
-        .slice-text-group {
-            transition: opacity 0.4s ease, filter 0.4s ease;
-        }
-        
-        .slice-text-group.eliminated {
-            opacity: 0.25;
-            filter: grayscale(1) blur(0.5px);
         }
 
         .slice-text {
@@ -355,13 +360,12 @@
             font-family: inherit;
             margin-bottom: 15px;
             box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
-            transition: transform 0.1s, background-color 0.2s;
+            transition: all 0.1s;
         }
         .spin-btn:hover { background-color: #f0f0f0; }
         .spin-btn:active { transform: translateY(2px); }
-        .spin-btn:disabled { opacity: 0.6; cursor: not-allowed; background: #e0e0e0; }
+        .spin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* Dynamic Result Area Display Box */
         .result-display-panel {
             padding: 14px;
             min-height: 80px;
@@ -372,6 +376,8 @@
             border-top: 4px solid #000;
             border-radius: 0 0 4px 4px;
             background: #ffffff;
+            width: 100%;
+            margin-bottom: 0;
         }
 
         .result-header {
@@ -390,7 +396,195 @@
             color: #000000;
         }
 
-        /* Heart particle for kiss */
+        /* --- NEW BIRTHDAY CAKE SECTION --- */
+        .cake-stage {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Rendered Cake Structure (inspired by images.jpeg structure) */
+        .cake-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .cake-plate {
+            width: 240px;
+            height: 18px;
+            background: #e2e8f0;
+            border: 4px solid #000;
+            border-radius: 50%;
+            margin-top: -6px;
+            z-index: 2;
+        }
+
+        .cake-layer {
+            width: 190px;
+            height: 60px;
+            background: #ebd3a8; /* Light golden sponge cake */
+            border-left: 4px solid #000;
+            border-right: 4px solid #000;
+            position: relative;
+            z-index: 3;
+        }
+
+        .cake-layer.bottom {
+            border-bottom: 4px solid #000;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .cake-layer.top {
+            width: 180px;
+            height: 55px;
+            margin-bottom: -4px;
+        }
+
+        /* Cream Frosting Overlay layers */
+        .frosting {
+            width: calc(100% + 8px);
+            height: 24px;
+            background: #ffffff; /* Thick white cream frosting */
+            border: 4px solid #000;
+            border-radius: 12px;
+            position: absolute;
+            top: -12px;
+            left: -4px;
+            z-index: 4;
+            overflow: hidden;
+        }
+
+        /* Decorative Icing Drips */
+        .frosting::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            bottom: -6px;
+            background-image: radial-gradient(circle, #fff 8px, transparent 9px);
+            background-size: 18px 20px;
+        }
+
+        /* Colorful Sprinkles System */
+        .sprinkles-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .sprinkle {
+            position: absolute;
+            width: 4px;
+            height: 10px;
+            border-radius: 2px;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
+        /* Color maps matching images.jpeg */
+        .sp-blue { background: #3ab1e0; transform: rotate(15deg); }
+        .sp-pink { background: #ff7675; transform: rotate(-35deg); }
+        .sp-yellow { background: #f2cf40; transform: rotate(45deg); }
+
+        /* Candle Elements */
+        .candles-row {
+            position: absolute;
+            top: -42px;
+            display: flex;
+            gap: 24px;
+            z-index: 10;
+        }
+
+        .candle {
+            width: 12px;
+            height: 45px;
+            background: repeating-linear-gradient(45deg, #ff7675, #ff7675 6px, #ffffff 6px, #ffffff 12px);
+            border: 3px solid #000;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .candle:hover { transform: scale(1.1); }
+
+        /* Flame Component */
+        .flame {
+            width: 10px;
+            height: 16px;
+            background: #f1c40f;
+            border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+            position: absolute;
+            top: -22px;
+            left: -2px;
+            border: 2px solid #000;
+            animation: flicker 0.6s infinite alternate;
+            transform-origin: bottom center;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .candle.blown-out .flame {
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); background: #ff9f43; }
+            100% { transform: scale(1.1) rotate(3deg); background: #f1c40f; }
+        }
+
+        /* Custom Message Card Box Overlay */
+        .msg-card-panel {
+            background: #fff;
+            border: 4px solid #000;
+            border-radius: 8px;
+            width: 90%;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+            transform: translateY(30px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .msg-card-panel.reveal {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .msg-prompt {
+            font-size: 14px;
+            font-weight: bold;
+            color: #d9383a;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .custom-textarea {
+            width: 100%;
+            height: 70px;
+            border: 2px dashed #a37241;
+            background: #fffdf5;
+            padding: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            color: #4a3319;
+            text-align: center;
+        }
+
         .heart {
             position: absolute;
             font-size: 30px;
@@ -408,7 +602,7 @@
 <body>
 
     <div class="browser-mockup">
-        <!-- Header -->
+        <!-- Frame Bar Header -->
         <div class="browser-header">
             <div class="window-buttons">
                 <span class="dot red"></span>
@@ -418,28 +612,25 @@
             <div class="address-bar">Snoopy's Interactive World</div>
         </div>
 
-        <!-- Content App Layout -->
+        <!-- Contents -->
         <div class="app-content">
             
-            <!-- LEFT PANEL: INTERACTIVE SNOOPY -->
+            <!-- LEFT PANEL: SNOOPY -->
             <div class="panel-wrapper">
                 <h2 class="panel-title">Interactive Snoopy Panel</h2>
                 <div class="panel">
                     <div class="snoopy-stage">
                         <div class="speech-bubble" id="snoopy-bubble">Hehehehe!<br>That's ticklish!</div>
                         
-                        <!-- Snoopy Graphic Anchor -->
                         <img src="snoopy-600nw-2709284725.webp" alt="Snoopy" class="snoopy-img" id="snoopy-char" onclick="handleSnoopyClick()">
                         <div id="heart-particle" class="heart">❤️</div>
                         
-                        <!-- Table Asset -->
                         <div class="table">
                             <div class="table-leg left"></div>
                             <div class="table-leg right"></div>
                         </div>
                     </div>
 
-                    <!-- Sequence Interactive Tracker Box -->
                     <div class="status-box">
                         <div class="click-header">Click Count</div>
                         <div class="steps-container">
@@ -460,54 +651,98 @@
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: ELIMINATION WHEEL -->
+            <!-- RIGHT PANEL CONFIGURATION CONTAINER -->
             <div class="panel-wrapper">
-                <h2 class="panel-title">The Snoopy spinner wheel</h2>
-                <div class="panel">
+                <h2 class="panel-title" id="right-panel-title">The Snoopy spinner wheel</h2>
+                <div class="panel" id="right-main-panel">
                     
-                    <div class="wheel-stage">
-                        <!-- Stationary Indicator Needle -->
-                        <div class="pointer-arrow"></div>
-                        
-                        <!-- Mathematical Rotating Container -->
-                        <div class="wheel-container" id="wheel">
-                            <svg class="wheel-svg" viewBox="0 0 200 200">
-                                <!-- Red Segment -->
-                                <path d="M 100 100 L 100 0 A 100 100 0 0 1 186.6 150 Z" fill="#d9383a"/>
-                                <!-- Blue Segment -->
-                                <path d="M 100 100 L 186.6 150 A 100 100 0 0 1 13.4 150 Z" fill="#3ab1e0"/>
-                                <!-- Yellow Segment -->
-                                <path d="M 100 100 L 13.4 150 A 100 100 0 0 1 100 0 Z" fill="#f2cf40"/>
+                    <!-- VIEW 1: THE SPINNER WHEEL CONTAINER -->
+                    <div id="wheel-view-section" class="view-section">
+                        <div class="wheel-stage">
+                            <div class="pointer-arrow"></div>
+                            <div class="wheel-container" id="wheel">
+                                <svg class="wheel-svg" viewBox="0 0 200 200">
+                                    <!-- Red Section: Changed to Birthday Cake -->
+                                    <path d="M 100 100 L 100 0 A 100 100 0 0 1 186.6 150 Z" fill="#d9383a"/>
+                                    <!-- Blue Section -->
+                                    <path d="M 100 100 L 186.6 150 A 100 100 0 0 1 13.4 150 Z" fill="#3ab1e0"/>
+                                    <!-- Yellow Section -->
+                                    <path d="M 100 100 L 13.4 150 A 100 100 0 0 1 100 0 Z" fill="#f2cf40"/>
 
-                                <!-- Segment 0 text: Birthday Card (Center: 60deg) -->
-                                <g transform="rotate(60, 100, 100)" class="slice-text-group" id="slice-group-0">
-                                    <text x="100" y="38" class="slice-text" text-anchor="middle">Birthday</text>
-                                    <text x="100" y="60" class="slice-text" text-anchor="middle">Card</text>
-                                </g>
+                                    <!-- Segment 0: Birthday Cake (Forced Angle Destination) -->
+                                    <g transform="rotate(60, 100, 100)">
+                                        <text x="100" y="38" class="slice-text" text-anchor="middle">Birthday</text>
+                                        <text x="100" y="60" class="slice-text" text-anchor="middle">Cake</text>
+                                    </g>
 
-                                <!-- Segment 1 text: Dear Friend (Center: 180deg) -->
-                                <g transform="rotate(180, 100, 100)" class="slice-text-group" id="slice-group-1">
-                                    <text x="100" y="38" class="slice-text" text-anchor="middle">Dear</text>
-                                    <text x="100" y="60" class="slice-text" text-anchor="middle">Friend</text>
-                                </g>
+                                    <!-- Segment 1: Dear Friend -->
+                                    <g transform="rotate(180, 100, 100)">
+                                        <text x="100" y="38" class="slice-text" text-anchor="middle">Dear</text>
+                                        <text x="100" y="60" class="slice-text" text-anchor="middle">Friend</text>
+                                    </g>
 
-                                <!-- Segment 2 text: Make a Wish (Center: 300deg) -->
-                                <g transform="rotate(300, 100, 100)" class="slice-text-group" id="slice-group-2">
-                                    <text x="100" y="38" class="slice-text" text-anchor="middle">Make a</text>
-                                    <text x="100" y="60" class="slice-text" text-anchor="middle">Wish</text>
-                                </g>
-                            </svg>
+                                    <!-- Segment 2: Make a Wish -->
+                                    <g transform="rotate(300, 100, 100)">
+                                        <text x="100" y="38" class="slice-text" text-anchor="middle">Make a</text>
+                                        <text x="100" y="60" class="slice-text" text-anchor="middle">Wish</text>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <button class="spin-btn" id="spin-btn" onclick="spinWheel()">SPIN!</button>
+
+                        <div class="result-display-panel">
+                            <div class="result-header">Landed On</div>
+                            <div id="result-text" class="result-main-text">Ready to Spin! ✨</div>
                         </div>
                     </div>
 
-                    <!-- Interaction trigger CTA -->
-                    <button class="spin-btn" id="spin-btn" onclick="spinWheel()">SPIN!</button>
+                    <!-- VIEW 2: NEW ANIMATED BIRTHDAY CAKE SCREEN -->
+                    <div id="cake-view-section" class="view-section hidden-view">
+                        <div class="cake-stage">
+                            <div class="cake-wrapper">
+                                <!-- Interactive Candlesticks row -->
+                                <div class="candles-row">
+                                    <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
+                                    <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
+                                    <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
+                                </div>
 
-                    <!-- Refined Landing Output Area Box (replaces old fonts message panel) -->
-                    <div class="status-box result-display-panel">
-                        <div class="result-header">Landed On</div>
-                        <div id="result-text" class="result-main-text">Ready to Spin! ✨</div>
+                                <!-- Top layer -->
+                                <div class="cake-layer top">
+                                    <div class="frosting"></div>
+                                    <div class="sprinkles-container">
+                                        <div class="sprinkle sp-blue" style="top:15px; left:30px;"></div>
+                                        <div class="sprinkle sp-pink" style="top:25px; left:70px;"></div>
+                                        <div class="sprinkle sp-yellow" style="top:10px; left:110px;"></div>
+                                        <div class="sprinkle sp-blue" style="top:28px; left:140px;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Bottom layer -->
+                                <div class="cake-layer bottom">
+                                    <div class="frosting"></div>
+                                    <div class="sprinkles-container">
+                                        <div class="sprinkle sp-pink" style="top:18px; left:20px;"></div>
+                                        <div class="sprinkle sp-yellow" style="top:32px; left:50px;"></div>
+                                        <div class="sprinkle sp-blue" style="top:12px; left:90px;"></div>
+                                        <div class="sprinkle sp-pink" style="top:30px; left:130px;"></div>
+                                        <div class="sprinkle sp-yellow" style="top:15px; left:160px;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="cake-plate"></div>
+                            </div>
+                        </div>
+
+                        <!-- User editable message board area -->
+                        <div class="msg-card-panel" id="msg-card">
+                            <div class="msg-prompt">✨ Write Your Custom Message Choice: ✨</div>
+                            <textarea class="custom-textarea" placeholder="Type a lovely happy birthday greeting message here..."></textarea>
+                        </div>
                     </div>
+
                 </div>
             </div>
 
@@ -519,7 +754,6 @@
         const snoopyChar = document.getElementById('snoopy-char');
         const bubble = document.getElementById('snoopy-bubble');
         const heart = document.getElementById('heart-particle');
-        
         let clickCount = 0;
 
         function handleSnoopyClick() {
@@ -528,7 +762,6 @@
             clickCount++;
             if (clickCount > 3) clickCount = 1;
 
-            // Update UI step progression
             document.getElementById('step-1').classList.remove('active');
             document.getElementById('step-2').classList.remove('active');
             document.getElementById('step-3').classList.remove('active');
@@ -561,86 +794,84 @@
             }, 1500);
         }
 
-        // --- WHEEL ELIMINATION AND SPIN ENGINE ---
+        // --- WHEEL ENGINE HARDCODED LANDING LOGIC ---
         const wheel = document.getElementById('wheel');
         const spinBtn = document.getElementById('spin-btn');
         const resultTextDisplay = document.getElementById('result-text');
+        
+        const wheelView = document.getElementById('wheel-view-section');
+        const cakeView = document.getElementById('cake-view-section');
+        const panelTitle = document.getElementById('right-panel-title');
 
-        // Sector Data Mappings
-        const sectors = [
-            { id: 0, label: "Birthday Card 🎂", targetAngle: 30 },  // Center 60deg -> maps to 90deg pointer
-            { id: 1, label: "Dear Friend 🤝", targetAngle: 270 },  // Center 180deg -> maps to 90deg pointer
-            { id: 2, label: "Make a Wish ✨", targetAngle: 150 }   // Center 300deg -> maps to 90deg pointer
-        ];
-
-        // Selection Pool arrays
-        let availableIndices = [0, 1, 2];
         let currentRotation = 0;
         let isSpinning = false;
 
         function spinWheel() {
             if (isSpinning) return;
 
-            // If pool is fully depleted, automatically restart round seamlessly
-            if (availableIndices.length === 0) {
-                availableIndices = [0, 1, 2];
-                sectors.forEach(s => {
-                    document.getElementById(`slice-group-${s.id}`).classList.remove('eliminated');
-                });
-            }
-
             isSpinning = true;
             spinBtn.disabled = true;
             resultTextDisplay.style.opacity = "0.5";
             resultTextDisplay.innerText = "Spinning...";
 
-            // Randomly pull an available item from remaining index pool
-            const randomPoolIndex = Math.floor(Math.random() * availableIndices.length);
-            const targetSectorIndex = availableIndices[randomPoolIndex];
-            
-            // Remove selection from the pool immediately so it cannot repeat next time
-            availableIndices.splice(randomPoolIndex, 1);
-
-            const targetSector = sectors[targetSectorIndex];
-            const baseAngle = targetSector.targetAngle;
-
-            // Math execution logic to always land directly onto chosen slice boundary
-            const extraSpins = 1440; // 4 clean full spin rotations 
+            // Hardcode target path geometry angle directly to Sector 0 ("Birthday Cake")
+            const cakeAngleTarget = 30; 
+            const extraSpins = 1440; 
             const degreesToNextZero = 360 - (currentRotation % 360);
-            const targetRotation = currentRotation + degreesToNextZero + extraSpins + baseAngle;
             
-            currentRotation = targetRotation;
+            currentRotation = currentRotation + degreesToNextZero + extraSpins + cakeAngleTarget;
             wheel.style.transform = `rotate(${currentRotation}deg)`;
 
-            // Execute landing sequences after momentum physics wrapper transitions (4000ms)
             setTimeout(() => {
-                isSpinning = false;
-                spinBtn.disabled = false;
-                
-                // Display text update
                 resultTextDisplay.style.opacity = "1";
-                resultTextDisplay.innerText = targetSector.label;
+                resultTextDisplay.innerText = "Birthday Cake! 🎂";
 
-                // Visually dim the text segment on the wheel interface layout
-                document.getElementById(`slice-group-${targetSectorIndex}`).classList.add('eliminated');
-
-                // If pool becomes empty on this turn, alert user next spin resets game cycle
-                if (availableIndices.length === 0) {
-                    spinBtn.innerText = "RESET & SPIN!";
-                } else {
-                    spinBtn.innerText = "SPIN!";
-                }
-
-                // Alert Snoopy response prompt feedback loop hook
-                bubble.innerHTML = `Ooh! Look!<br>${targetSector.label}`;
+                // Snoopy reaction alert overlay
+                bubble.innerHTML = "Ooh! Yay!<br>Birthday Cake! 🎂";
                 bubble.classList.add('show');
                 snoopyChar.classList.add('anim-nod');
+
+                // Transition panels systematically to Cake Screen after a brief 1.5s reveal pause
                 setTimeout(() => {
-                    snoopyChar.className = 'snoopy-img';
                     bubble.classList.remove('show');
-                }, 1800);
+                    snoopyChar.className = 'snoopy-img';
+                    
+                    // Switch UI views smoothly
+                    wheelView.classList.add('hidden-view');
+                    cakeView.classList.remove('hidden-view');
+                    panelTitle.innerText = "Blow the Candles! 🎂";
+                }, 1500);
 
             }, 4000);
+        }
+
+        // --- INTERACTIVE CAKE SYSTEM LOGIC ---
+        let litCandlesCount = 3;
+
+        function blowCandle(candleElement) {
+            if (candleElement.classList.contains('blown-out')) return;
+
+            candleElement.classList.add('blown-out');
+            litCandlesCount--;
+
+            // Snoopy giggles happily as individual flames go out
+            bubble.innerHTML = "Pufff! 💨";
+            bubble.classList.add('show');
+            snoopyChar.classList.add('anim-giggle');
+            
+            setTimeout(() => {
+                bubble.classList.remove('show');
+                snoopyChar.className = 'snoopy-img';
+            }, 800);
+
+            // Once all 3 elements are cleared, unlock card container panel layout
+            if (litCandlesCount === 0) {
+                setTimeout(() => {
+                    document.getElementById('msg-card').classList.add('reveal');
+                    bubble.innerHTML = "Make a wish! ✨";
+                    bubble.classList.add('show');
+                }, 600);
+            }
         }
     </script>
 </body>
