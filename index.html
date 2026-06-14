@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snoopy's Interactive World</title>
+  <style>
+    :root {
+      --ink-black: #1a1a1a;
+      --paper-white: #fdfbf7;
+      --doghouse-red: #e53935;
+      --woodstock-yellow: #fdd835;
+      --sky-blue: #29b6f6;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 50px;
+      justify-content: center;
+      align-items: center;
+      max-width: 1000px;
+      padding: 20px;
+    }
+
+    /* --- SCENE: SNOOPY GREETING --- */
+    .scene-box {
+      position: relative;
+      width: 300px;
+      height: 350px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end; /* Keeps Snoopy grounded at the bottom */
+      align-items: center;
+    }
+
+    /* Speech Bubble */
+    .speech-bubble {
+      position: absolute;
+      top: 60px; /* Adjusted slightly lower now that the table is gone */
+      background: white;
+      border: 3px solid var(--ink-black);
+      border-radius: 15px;
+      padding: 10px 20px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease-out;
+    }
+    
+    .speech-bubble.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 15px 10px 0;
+      border-style: solid;
+      border-color: white transparent;
+      display: block;
+      width: 0;
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -19px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 16px 11px 0;
+      border-style: solid;
+      border-color: var(--ink-black) transparent;
+      display: block;
+      width: 0;
+      z-index: -1;
+    }
+
+    /* Snoopy Character Container */
+    .snoopy-placeholder {
+      font-size: 6rem; /* Made him a little bigger since he has more space */
+      margin-bottom: 10px;
+      z-index: 2;
+      display: inline-block;
+    }
+
+    /* Waving Keyframe Animation */
+    @keyframes wave {
+      0% { transform: rotate(0deg); }
+      20% { transform: rotate(-15deg); }
+      40% { transform: rotate(10deg); }
+      60% { transform: rotate(-15deg); }
+      80% { transform: rotate(10deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .wave-animation {
+      animation: wave 1.2s ease-in-out;
+    }
+
+    /* --- COMPONENT: SPINNING WHEEL --- */
+    .wheel-box {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* The Arrow Ticker pointer */
+    .ticker {
+      width: 0; 
+      height: 0; 
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid var(--ink-black);
+      position: absolute;
+      top: -10px;
+      z-index: 10;
+    }
+
+    .wheel-canvas {
+      border: 6px solid var(--ink-black);
+      border-radius: 50%;
+      background: white;
+      box-shadow: 5px 5px 0px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: transform 4s cubic-bezier(0.1, 0.8, 0.2, 1);
+    }
+
+    .spin-btn {
+      margin-top: 20px;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: var(--ink-black);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.1s;
+    }
+
+    .spin-btn:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Left: Snoopy Greeting Scene (No Table) -->
+    <div class="scene-box">
+      <div class="speech-bubble" id="speechBubble">Hi there! 👋</div>
+      <!-- Feel free to swap out this 🐶 emoji with an actual transparent Snoopy img element later -->
+      <div class="snoopy-placeholder" id="snoopyCharacter">🐶</div>
+    </div>
+
+    <!-- Right: The Interactive Wheel -->
+    <div class="wheel-box">
+      <div class="ticker"></div>
+      <canvas id="wheel" class="wheel-canvas" width="300" height="300"></canvas>
+      <button class="spin-btn" id="spinButton" onclick="spinWheel()">TAP TO SPIN</button>
+    </div>
+
+  </div>
+
+  <script>
+    // --- 1. INTRO GREETING ANIMATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const bubble = document.getElementById('speechBubble');
+        const snoopy = document.getElementById('snoopyCharacter');
+        
+        bubble.classList.add('show');
+        snoopy.classList.add('wave-animation');
+        
+        setTimeout(() => {
+          snoopy.classList.remove('wave-animation');
+        }, 1200);
+      }, 600);
+    });
+
+    // --- 2. CANVAS WHEEL RENDERING ---
+    const canvas = document.getElementById('wheel');
+    const ctx = canvas.getContext('2d');
+    const segments = ['Birthday Card', 'Make a Wish', 'Dear Friend'];
+    const colors = ['#e53935', '#fdd835', '#29b6f6'];
+    
+    const size = canvas.width;
+    const center = size / 2;
+    const radius = size / 2;
+    const arcSize = (2 * Math.PI) / 3;
+
+    function drawWheel() {
+      for (let i = 0; i < 3; i++) {
+        const angle = i * arcSize;
+        
+        ctx.beginPath();
+        ctx.fillStyle = colors[i];
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, angle, angle + arcSize);
+        ctx.lineTo(center, center);
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#1a1a1a';
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(angle + arcSize / 2);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = i === 1 ? '#1a1a1a' : '#ffffff';
+        ctx.font = 'bold 16px sans-serif';
+        ctx.fillText(segments[i], radius - 20, 5);
+        ctx.restore();
+      }
+    }
+    drawWheel();
+
+    // --- 3. SPINNING LOGIC ---
+    let currentRotation = 0;
+    let isSpinning = false;
+
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+      
+      const extraDegrees = Math.floor(Math.random() * 360);
+      const totalSpin = 1080 + extraDegrees; 
+      currentRotation += totalSpin;
+      
+      canvas.style.transform = `rotate(${currentRotation}deg)`;
+      
+      const normalization = (360 - (currentRotation % 360)) % 360;
+      const absoluteLandingAngle = (normalization + 90) % 360;
+      const targetIndex = Math.floor(absoluteLandingAngle / 120) % 3;
+      const finalChoice = segments[targetIndex];
+
+      setTimeout(() => {
+        isSpinning = false;
+        handleWheelLanding(finalChoice);
+      }, 4000);
+    }
+
+    // --- 4. THE ACTION HOOK ---
+    function handleWheelLanding(result) {
+      alert(`The wheel landed on: "${result}"!`);
+      
+      if (result === 'Birthday Card') {
+        console.log("Execute Birthday Card routine...");
+      } else if (result === 'Make a Wish') {
+        console.log("Execute Make a Wish routine...");
+      } else if (result === 'Dear Friend') {
+        console.log("Execute Dear Friend routine...");
+      }
+    }
+  </script>
+</body>
+</html>
