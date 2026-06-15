@@ -584,7 +584,7 @@
             width: 100%;
         }
 
-        /* --- MAKE A WISH PANEL VIEW STYLES (EXPANDED TO WHOLE WHEEL FRAME) --- */
+        /* --- MAKE A WISH PANEL VIEW STYLES --- */
         .wish-stage, .friend-stage {
             display: flex;
             flex-direction: column;
@@ -598,7 +598,7 @@
 
         .wish-image-container {
             width: 90%;
-            height: 410px; /* Covers the framework completely like the wheel */
+            height: 410px; 
             border: 4px solid #000000;
             background: #ffffff;
             border-radius: 8px;
@@ -612,13 +612,13 @@
         .wish-display-img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Assures custom uploads scale inside beautifully without distorting */
+            object-fit: contain; 
         }
 
         /* --- DEAR FRIEND FINAL SHOWCASE BOX --- */
         .friend-message-box {
             width: 90%;
-            height: 410px; /* Matching size requirements perfectly */
+            height: 410px; 
             background: #fffdf5;
             border: 4px solid #000000;
             border-radius: 8px;
@@ -804,7 +804,7 @@
                         <div class="wish-stage">
                             <div class="wish-image-container">
                                 <img src="your-wish-image.jpg" alt="Make a Wish Concept" class="wish-display-img">
-                                </div>
+                            </div>
                         </div>
                         <button class="back-btn" onclick="returnToWheelFromWish()">Back to Wheel ↩️</button>
                     </div>
@@ -815,7 +815,7 @@
                                 <div class="friend-message-text">
                                     To an incredibly amazing friend! Thank you for always bringing so much joy, light, and warmth into the world. You deserve the absolute best today and every single day! 🤝❤️✨
                                 </div>
-                                </div>
+                            </div>
                         </div>
                         <button class="back-btn" onclick="resetWholeExperience()">Restart Experience 🔄</button>
                     </div>
@@ -826,6 +826,9 @@
         </div>
     </div>
 
+    <audio id="audio-cake" src="birthday-cake-song.mp3" loop></audio>
+    <audio id="audio-wish" src="make-a-wish-track.mp3" loop></audio>
+    <audio id="audio-friend" src="dear-friend-theme.mp3" loop></audio>
     <script>
         // --- SNOOPY INTERACTION LOGIC ---
         const snoopyChar = document.getElementById('snoopy-char');
@@ -888,11 +891,29 @@
             { id: 2, label: "Make a Wish ✨", targetAngle: 150 }   
         ];
 
-        // Forced Order Array: Cake (0) -> Wish (2) -> Friend (1)
         const spinOrder = [0, 2, 1];
         let currentSpinIndex = 0;
         let currentRotation = 0;
         let isSpinning = false;
+
+        // --- MUSIC CENTRAL STORAGE CONTROLLER ---
+        function switchMusic(targetAudioId) {
+            // Cut sound completely from all audio elements
+            const tracks = ['audio-cake', 'audio-wish', 'audio-friend'];
+            tracks.forEach(trackId => {
+                const audioEl = document.getElementById(trackId);
+                audioEl.pause();
+                audioEl.currentTime = 0; // Rewind back to start position
+            });
+
+            // If a valid track parameter is passed, ignite play sequence safely
+            if (targetAudioId) {
+                const targetTrack = document.getElementById(targetAudioId);
+                targetTrack.play().catch(error => {
+                    console.log("Audio play blocked until interaction validation check.", error);
+                });
+            }
+        }
 
         function spinWheel() {
             if (isSpinning) return;
@@ -936,16 +957,19 @@
                         wheelView.classList.add('hidden-view');
                         cakeView.classList.remove('hidden-view');
                         panelTitle.innerText = "Blow the Candles! 🎂";
+                        switchMusic('audio-cake'); // Turn on Cake music
                     } 
                     else if (targetSectorIndex === 2) {
                         wheelView.classList.add('hidden-view');
                         wishView.classList.remove('hidden-view');
                         panelTitle.innerText = "Make a Wish! ✨";
+                        switchMusic('audio-wish'); // Turn on Wish music
                     }
                     else if (targetSectorIndex === 1) {
                         wheelView.classList.add('hidden-view');
                         friendView.classList.remove('hidden-view');
                         panelTitle.innerText = "Special Message! 🤝";
+                        switchMusic('audio-friend'); // Turn on Friend message music
                     }
                 }, 1500);
 
@@ -988,6 +1012,8 @@
         }
 
         function returnToWheel() {
+            switchMusic(null); // Stop music when viewing the wheel layout
+
             litCandlesCount = 3;
             document.querySelectorAll('.candle').forEach(c => c.classList.remove('blown-out'));
             document.getElementById('msg-card').classList.remove('reveal');
@@ -1007,6 +1033,8 @@
 
         // --- WISH ACTION ---
         function returnToWheelFromWish() {
+            switchMusic(null); // Stop music when returning back to the wheel
+
             wishView.classList.add('hidden-view');
             wheelView.classList.remove('hidden-view');
             panelTitle.innerText = "The Snoopy spinner wheel";
@@ -1022,6 +1050,8 @@
 
         // --- RESTARTER METHOD ---
         function resetWholeExperience() {
+            switchMusic(null); // Mute everything on hard restart
+
             currentSpinIndex = 0;
             currentRotation = 0;
             isSpinning = false;
