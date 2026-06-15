@@ -584,8 +584,8 @@
             width: 100%;
         }
 
-        /* --- MAKE A WISH PANEL VIEW STYLES --- */
-        .wish-stage {
+        /* --- MAKE A WISH PANEL VIEW STYLES (EXPANDED TO WHOLE WHEEL FRAME) --- */
+        .wish-stage, .friend-stage {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -593,12 +593,12 @@
             flex-grow: 1;
             width: 100%;
             padding: 20px;
+            margin-top: 10px;
         }
 
         .wish-image-container {
-            width: 100%;
-            max-width: 280px;
-            height: 280px;
+            width: 90%;
+            height: 410px; /* Covers the framework completely like the wheel */
             border: 4px solid #000000;
             background: #ffffff;
             border-radius: 8px;
@@ -612,7 +612,48 @@
         .wish-display-img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Assures custom uploads scale inside beautifully without distorting */
+        }
+
+        /* --- DEAR FRIEND FINAL SHOWCASE BOX --- */
+        .friend-message-box {
+            width: 90%;
+            height: 410px; /* Matching size requirements perfectly */
+            background: #fffdf5;
+            border: 4px solid #000000;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .friend-message-box::before {
+            content: "🤝 Message Details 🤝";
+            position: absolute;
+            top: -14px;
+            background: #ff5f56;
+            color: #fff;
+            border: 3px solid #000;
+            padding: 2px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .friend-message-text {
+            font-family: 'Georgia', serif;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            line-height: 1.6;
+            width: 100%;
+            overflow-y: auto;
         }
 
         .heart {
@@ -754,6 +795,7 @@
                             <div class="display-message-text">
                                 Happy Birthday! Wishing you an absolutely beautiful day ahead filled with immense happiness, laughter, and magical moments! 🎂🎁✨
                             </div>
+
                             <button class="back-btn" onclick="returnToWheel()">Back to Wheel ↩️</button>
                         </div>
                     </div>
@@ -765,6 +807,17 @@
                                 </div>
                         </div>
                         <button class="back-btn" onclick="returnToWheelFromWish()">Back to Wheel ↩️</button>
+                    </div>
+
+                    <div id="friend-view-section" class="view-section hidden-view">
+                        <div class="friend-stage">
+                            <div class="friend-message-box">
+                                <div class="friend-message-text">
+                                    To an incredibly amazing friend! Thank you for always bringing so much joy, light, and warmth into the world. You deserve the absolute best today and every single day! 🤝❤️✨
+                                </div>
+                                </div>
+                        </div>
+                        <button class="back-btn" onclick="resetWholeExperience()">Restart Experience 🔄</button>
                     </div>
 
                 </div>
@@ -818,7 +871,7 @@
             }, 1500);
         }
 
-        // --- ORDERED ENGINE LOGIC ---
+        // --- FIXED SEQUENCE WHEEL NAVIGATION CONTROLLER ---
         const wheel = document.getElementById('wheel');
         const spinBtn = document.getElementById('spin-btn');
         const resultTextDisplay = document.getElementById('result-text');
@@ -826,6 +879,7 @@
         const wheelView = document.getElementById('wheel-view-section');
         const cakeView = document.getElementById('cake-view-section');
         const wishView = document.getElementById('wish-view-section');
+        const friendView = document.getElementById('friend-view-section');
         const panelTitle = document.getElementById('right-panel-title');
 
         const sectors = [
@@ -834,8 +888,7 @@
             { id: 2, label: "Make a Wish ✨", targetAngle: 150 }   
         ];
 
-        // Strict Sequential Execution Array
-        // Spin 1: Birthday Cake (0) | Spin 2: Make a Wish (2) | Spin 3: Dear Friend (1)
+        // Forced Order Array: Cake (0) -> Wish (2) -> Friend (1)
         const spinOrder = [0, 2, 1];
         let currentSpinIndex = 0;
         let currentRotation = 0;
@@ -844,12 +897,9 @@
         function spinWheel() {
             if (isSpinning) return;
 
-            // Simple loop restart if execution reaches beyond structural boundaries
             if (currentSpinIndex >= spinOrder.length) {
-                currentSpinIndex = 0;
-                sectors.forEach(s => {
-                    document.getElementById(`slice-group-${s.id}`).classList.remove('eliminated');
-                });
+                resetWholeExperience();
+                return;
             }
 
             isSpinning = true;
@@ -858,7 +908,7 @@
             resultTextDisplay.innerText = "Spinning...";
 
             const targetSectorIndex = spinOrder[currentSpinIndex];
-            currentSpinIndex++; // Increment state tracker ahead of transition layout checks
+            currentSpinIndex++; 
 
             const targetSector = sectors[targetSectorIndex];
             const baseAngle = targetSector.targetAngle;
@@ -872,7 +922,6 @@
                 resultTextDisplay.style.opacity = "1";
                 resultTextDisplay.innerText = targetSector.label;
 
-                // Eliminate current wedge visually
                 document.getElementById(`slice-group-${targetSectorIndex}`).classList.add('eliminated');
 
                 bubble.innerHTML = `Ooh! Look!<br>${targetSector.label}`;
@@ -893,11 +942,10 @@
                         wishView.classList.remove('hidden-view');
                         panelTitle.innerText = "Make a Wish! ✨";
                     }
-                    else {
-                        // Last Spin (Dear Friend) ends right on the wheel interface layout
-                        isSpinning = false;
-                        spinBtn.disabled = false;
-                        updateSpinButtonText();
+                    else if (targetSectorIndex === 1) {
+                        wheelView.classList.add('hidden-view');
+                        friendView.classList.remove('hidden-view');
+                        panelTitle.innerText = "Special Message! 🤝";
                     }
                 }, 1500);
 
@@ -906,13 +954,13 @@
 
         function updateSpinButtonText() {
             if (currentSpinIndex >= spinOrder.length) {
-                spinBtn.innerText = "RESET & SPIN!";
+                spinBtn.innerText = "ALL DONE! RESET 🔄";
             } else {
                 spinBtn.innerText = "SPIN!";
             }
         }
 
-        // --- CAKE INTERACTION ---
+        // --- CAKE ACTIONS ---
         let litCandlesCount = 3;
 
         function blowCandle(candleElement) {
@@ -957,7 +1005,7 @@
             setTimeout(() => bubble.classList.remove('show'), 2000);
         }
 
-        // --- WISH RETURN LINK CONTROLLER ---
+        // --- WISH ACTION ---
         function returnToWheelFromWish() {
             wishView.classList.add('hidden-view');
             wheelView.classList.remove('hidden-view');
@@ -968,6 +1016,32 @@
             updateSpinButtonText();
 
             bubble.innerHTML = "One last spin<br>remaining! 🤝";
+            bubble.classList.add('show');
+            setTimeout(() => bubble.classList.remove('show'), 2000);
+        }
+
+        // --- RESTARTER METHOD ---
+        function resetWholeExperience() {
+            currentSpinIndex = 0;
+            currentRotation = 0;
+            isSpinning = false;
+            
+            wheel.style.transform = `rotate(0deg)`;
+            resultTextDisplay.innerText = "Ready to Spin! ✨";
+            spinBtn.disabled = false;
+            spinBtn.innerText = "SPIN!";
+
+            sectors.forEach(s => {
+                document.getElementById(`slice-group-${s.id}`).classList.remove('eliminated');
+            });
+
+            cakeView.classList.add('hidden-view');
+            wishView.classList.add('hidden-view');
+            friendView.classList.add('hidden-view');
+            wheelView.classList.remove('hidden-view');
+            panelTitle.innerText = "The Snoopy spinner wheel";
+
+            bubble.innerHTML = "Let's try<br>again! 🎯";
             bubble.classList.add('show');
             setTimeout(() => bubble.classList.remove('show'), 2000);
         }
