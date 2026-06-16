@@ -584,7 +584,7 @@
             width: 100%;
         }
 
-        /* --- MAKE A WISH PANEL VIEW STYLES --- */
+        /* --- BIRTHDAY CARD PANEL VIEW STYLES --- */
         .wish-stage, .friend-stage {
             display: flex;
             flex-direction: column;
@@ -740,8 +740,8 @@
                                     </g>
 
                                     <g transform="rotate(300, 100, 100)" class="slice-text-group" id="slice-group-2">
-                                        <text x="100" y="38" class="slice-text" text-anchor="middle">Make a</text>
-                                        <text x="100" y="60" class="slice-text" text-anchor="middle">Wish</text>
+                                        <text x="100" y="38" class="slice-text" text-anchor="middle">Birthday</text>
+                                        <text x="100" y="60" class="slice-text" text-anchor="middle">Card</text>
                                     </g>
                                 </svg>
                             </div>
@@ -803,7 +803,7 @@
                     <div id="wish-view-section" class="view-section hidden-view">
                         <div class="wish-stage">
                             <div class="wish-image-container">
-                                <img src="your-wish-image.jpg" alt="Make a Wish Concept" class="wish-display-img">
+                                <img src="your-birthday-card-image.jpg" alt="Birthday Card" class="wish-display-img">
                             </div>
                         </div>
                         <button class="back-btn" onclick="returnToWheelFromWish()">Back to Wheel ↩️</button>
@@ -826,7 +826,7 @@
         </div>
     </div>
 
-    <audio id="audio-cake" src="생일축하송 Happy Birthday To You 🍰 Jazz ver(MP3_160K).mp3" loop></audio>
+   <audio id="audio-cake" src="생일축하송 Happy Birthday To You 🍰 Jazz ver(MP3_160K).mp3" loop></audio>
     <audio id="audio-wish" src="make-a-wish-track.mp3" loop></audio>
     <audio id="audio-friend" src="dear-friend-theme.mp3" loop></audio>
 
@@ -847,7 +847,7 @@
         function playSFX(elementId) {
             const sfxNode = document.getElementById(elementId);
             if (sfxNode) {
-                sfxNode.currentTime = 0; // Rewind back instantly to front 
+                sfxNode.currentTime = 0; 
                 sfxNode.play().catch(err => console.log("SFX play check:", err));
             }
         }
@@ -867,19 +867,19 @@
                 bubble.innerHTML = "Hehehehe!<br>That's ticklish!";
                 bubble.classList.add('show');
                 snoopyChar.classList.add('anim-giggle');
-                playSFX('sfx-giggle'); // Trigger Giggle SFX
+                playSFX('sfx-giggle'); 
             } 
             else if (clickCount === 2) {
                 bubble.innerHTML = "You're a<br>wonderful friend!";
                 bubble.classList.add('show');
                 snoopyChar.classList.add('anim-nod');
-                playSFX('sfx-nod'); // Trigger Nod SFX
+                playSFX('sfx-nod'); 
             } 
             else if (clickCount === 3) {
                 bubble.innerHTML = "Mwah! 💋";
                 bubble.classList.add('show');
                 snoopyChar.classList.add('anim-kiss');
-                playSFX('sfx-kiss'); // Trigger Kiss SFX
+                playSFX('sfx-kiss'); 
                 
                 heart.style.left = (snoopyChar.offsetLeft + 80) + 'px';
                 heart.style.top = (snoopyChar.offsetTop + 40) + 'px';
@@ -907,7 +907,7 @@
         const sectors = [
             { id: 0, label: "Birthday Cake 🎂", targetAngle: 30 },  
             { id: 1, label: "Dear Friend 🤝", targetAngle: 270 },  
-            { id: 2, label: "Make a Wish ✨", targetAngle: 150 }   
+            { id: 2, label: "Birthday Card 💌", targetAngle: 150 }   
         ];
 
         const spinOrder = [0, 2, 1];
@@ -945,7 +945,7 @@
             resultTextDisplay.style.opacity = "0.5";
             resultTextDisplay.innerText = "Spinning...";
             
-            playSFX('sfx-spin'); // Trigger Wheel Spinner SFX loop instantly
+            playSFX('sfx-spin'); 
 
             const targetSectorIndex = spinOrder[currentSpinIndex];
             currentSpinIndex++; 
@@ -981,7 +981,7 @@
                     else if (targetSectorIndex === 2) {
                         wheelView.classList.add('hidden-view');
                         wishView.classList.remove('hidden-view');
-                        panelTitle.innerText = "Make a Wish! ✨";
+                        panelTitle.innerText = "Your Birthday Card! 💌";
                         switchMusic('audio-wish'); 
                     }
                     else if (targetSectorIndex === 1) {
@@ -1012,7 +1012,7 @@
             candleElement.classList.add('blown-out');
             litCandlesCount--;
             
-            playSFX('sfx-puff'); // Trigger Candle Blow Puff SFX
+            playSFX('sfx-puff'); 
 
             bubble.innerHTML = "Pufff! 💨";
             bubble.classList.add('show');
@@ -1026,7 +1026,7 @@
             if (litCandlesCount === 0) {
                 setTimeout(() => {
                     document.getElementById('msg-card').classList.add('reveal');
-                    bubble.innerHTML = "Make a wish! ✨";
+                    bubble.innerHTML = "Look at that! ✨";
                     bubble.classList.add('show');
                 }, 600);
             }
@@ -1052,7 +1052,7 @@
             setTimeout(() => bubble.classList.remove('show'), 2000);
         }
 
-        // --- WISH ACTION ---
+        // --- BIRTHDAY CARD BACK NAV ACTION ---
         function returnToWheelFromWish() {
             switchMusic(null); 
 
