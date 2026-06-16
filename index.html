@@ -829,12 +829,28 @@
     <audio id="audio-cake" src="birthday-cake-song.mp3" loop></audio>
     <audio id="audio-wish" src="make-a-wish-track.mp3" loop></audio>
     <audio id="audio-friend" src="dear-friend-theme.mp3" loop></audio>
+
+    <audio id="sfx-giggle" src="snoopy-giggle.mp3"></audio>
+    <audio id="sfx-nod" src="cute-boing.mp3"></audio>
+    <audio id="sfx-kiss" src="snoopy-kiss.mp3"></audio>
+    <audio id="sfx-spin" src="wheel-spin.mp3"></audio>
+    <audio id="sfx-puff" src="candle-puff.mp3"></audio>
+
     <script>
         // --- SNOOPY INTERACTION LOGIC ---
         const snoopyChar = document.getElementById('snoopy-char');
         const bubble = document.getElementById('snoopy-bubble');
         const heart = document.getElementById('heart-particle');
         let clickCount = 0;
+
+        // Central SFX Controller handling sudden rapid replay
+        function playSFX(elementId) {
+            const sfxNode = document.getElementById(elementId);
+            if (sfxNode) {
+                sfxNode.currentTime = 0; // Rewind back instantly to front 
+                sfxNode.play().catch(err => console.log("SFX play check:", err));
+            }
+        }
 
         function handleSnoopyClick() {
             if (snoopyChar.className.includes('anim-')) return;
@@ -851,16 +867,19 @@
                 bubble.innerHTML = "Hehehehe!<br>That's ticklish!";
                 bubble.classList.add('show');
                 snoopyChar.classList.add('anim-giggle');
+                playSFX('sfx-giggle'); // Trigger Giggle SFX
             } 
             else if (clickCount === 2) {
                 bubble.innerHTML = "You're a<br>wonderful friend!";
                 bubble.classList.add('show');
                 snoopyChar.classList.add('anim-nod');
+                playSFX('sfx-nod'); // Trigger Nod SFX
             } 
             else if (clickCount === 3) {
                 bubble.innerHTML = "Mwah! 💋";
                 bubble.classList.add('show');
                 snoopyChar.classList.add('anim-kiss');
+                playSFX('sfx-kiss'); // Trigger Kiss SFX
                 
                 heart.style.left = (snoopyChar.offsetLeft + 80) + 'px';
                 heart.style.top = (snoopyChar.offsetTop + 40) + 'px';
@@ -898,15 +917,13 @@
 
         // --- MUSIC CENTRAL STORAGE CONTROLLER ---
         function switchMusic(targetAudioId) {
-            // Cut sound completely from all audio elements
             const tracks = ['audio-cake', 'audio-wish', 'audio-friend'];
             tracks.forEach(trackId => {
                 const audioEl = document.getElementById(trackId);
                 audioEl.pause();
-                audioEl.currentTime = 0; // Rewind back to start position
+                audioEl.currentTime = 0; 
             });
 
-            // If a valid track parameter is passed, ignite play sequence safely
             if (targetAudioId) {
                 const targetTrack = document.getElementById(targetAudioId);
                 targetTrack.play().catch(error => {
@@ -927,6 +944,8 @@
             spinBtn.disabled = true;
             resultTextDisplay.style.opacity = "0.5";
             resultTextDisplay.innerText = "Spinning...";
+            
+            playSFX('sfx-spin'); // Trigger Wheel Spinner SFX loop instantly
 
             const targetSectorIndex = spinOrder[currentSpinIndex];
             currentSpinIndex++; 
@@ -957,19 +976,19 @@
                         wheelView.classList.add('hidden-view');
                         cakeView.classList.remove('hidden-view');
                         panelTitle.innerText = "Blow the Candles! 🎂";
-                        switchMusic('audio-cake'); // Turn on Cake music
+                        switchMusic('audio-cake'); 
                     } 
                     else if (targetSectorIndex === 2) {
                         wheelView.classList.add('hidden-view');
                         wishView.classList.remove('hidden-view');
                         panelTitle.innerText = "Make a Wish! ✨";
-                        switchMusic('audio-wish'); // Turn on Wish music
+                        switchMusic('audio-wish'); 
                     }
                     else if (targetSectorIndex === 1) {
                         wheelView.classList.add('hidden-view');
                         friendView.classList.remove('hidden-view');
                         panelTitle.innerText = "Special Message! 🤝";
-                        switchMusic('audio-friend'); // Turn on Friend message music
+                        switchMusic('audio-friend'); 
                     }
                 }, 1500);
 
@@ -992,6 +1011,8 @@
 
             candleElement.classList.add('blown-out');
             litCandlesCount--;
+            
+            playSFX('sfx-puff'); // Trigger Candle Blow Puff SFX
 
             bubble.innerHTML = "Pufff! 💨";
             bubble.classList.add('show');
@@ -1012,7 +1033,7 @@
         }
 
         function returnToWheel() {
-            switchMusic(null); // Stop music when viewing the wheel layout
+            switchMusic(null); 
 
             litCandlesCount = 3;
             document.querySelectorAll('.candle').forEach(c => c.classList.remove('blown-out'));
@@ -1033,7 +1054,7 @@
 
         // --- WISH ACTION ---
         function returnToWheelFromWish() {
-            switchMusic(null); // Stop music when returning back to the wheel
+            switchMusic(null); 
 
             wishView.classList.add('hidden-view');
             wheelView.classList.remove('hidden-view');
@@ -1050,7 +1071,7 @@
 
         // --- RESTARTER METHOD ---
         function resetWholeExperience() {
-            switchMusic(null); // Mute everything on hard restart
+            switchMusic(null); 
 
             currentSpinIndex = 0;
             currentRotation = 0;
